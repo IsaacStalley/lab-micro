@@ -9,10 +9,15 @@
 	radix dec
 	include "p12f683.inc"
 ;--------------------------------------------------------
+; config word(s)
+;--------------------------------------------------------
+	__config 0x0
+;--------------------------------------------------------
 ; external declarations
 ;--------------------------------------------------------
 	extern	__modsint
 	extern	_TRISIO
+	extern	_GPIO
 	extern	_GPIObits
 	extern	__sdcc_gsinit_startup
 ;--------------------------------------------------------
@@ -114,27 +119,31 @@ code_six_sided_dice	code
 ;   _lfsrGenerate
 ;   __modsint
 ;   _delay
-;6 compiler assigned registers:
+;7 compiler assigned registers:
 ;   r0x1007
 ;   r0x1008
 ;   r0x1009
 ;   STK02
 ;   STK01
 ;   STK00
+;   r0x100A
 ;; Starting pCode block
 S_six_sided_dice__main	code
 _main:
 ; 2 exit points
-;	.line	24; "six_sided_dice.c"	TRISIO = 0b00100000;  // Set GP5 as input
+;	.line	27; "six_sided_dice.c"	TRISIO = 0b00100000;  // Set GP5 as input
 	MOVLW	0x20
 	BANKSEL	_TRISIO
 	MOVWF	_TRISIO
+;	.line	28; "six_sided_dice.c"	GPIO = 0x00;
+	BANKSEL	_GPIO
+	CLRF	_GPIO
 _00160_DS_:
-;	.line	29; "six_sided_dice.c"	if (GP5) {
+;	.line	33; "six_sided_dice.c"	if (GP5) {
 	BANKSEL	_GPIObits
 	BTFSS	_GPIObits,5
 	GOTO	_00160_DS_
-;	.line	31; "six_sided_dice.c"	unsigned char numLeds = (lfsrGenerate() % 6) + 1;
+;	.line	35; "six_sided_dice.c"	unsigned char numLeds = (lfsrGenerate() % 6) + 1;
 	PAGESEL	_lfsrGenerate
 	CALL	_lfsrGenerate
 	PAGESEL	$
@@ -158,46 +167,49 @@ _00160_DS_:
 	MOVWF	r0x1007
 	MOVWF	r0x1009
 	INCF	r0x1009,W
-;	.line	33; "six_sided_dice.c"	if (numLeds % 2 != 0){
+	MOVWF	r0x1009
 	MOVWF	r0x1007
+;	.line	38; "six_sided_dice.c"	unsigned char temp = 0;
+	CLRF	r0x1008
+;;100	MOVF	r0x1007,W
+;;1	CLRF	r0x100A
+;	.line	40; "six_sided_dice.c"	if (numLeds % 2){
+	BTFSS	r0x1009,0
+	GOTO	_00147_DS_
+;	.line	41; "six_sided_dice.c"	temp |= (0b00001);
+	MOVLW	0x01
 	MOVWF	r0x1008
-	CLRF	r0x1009
-	BTFSS	r0x1008,0
-	GOTO	_00149_DS_
-;	.line	34; "six_sided_dice.c"	if (numLeds == 6){
-	MOVF	r0x1007,W
-;	.line	35; "six_sided_dice.c"	GP2 = 0x01;
-	XORLW	0x06
-;	.line	37; "six_sided_dice.c"	GP0 = 0x01;
-	BTFSS	STATUS,2
-	GOTO	_00001_DS_
-	BANKSEL	_GPIObits
-	BSF	_GPIObits,2
-_00001_DS_:
-	BANKSEL	_GPIObits
-	BSF	_GPIObits,0
-_00149_DS_:
-;	.line	39; "six_sided_dice.c"	if (numLeds > 1){
+;;swapping arguments (AOP_TYPEs 1/2)
+;;unsigned compare: left >= lit(0x2=2), size=1
+_00147_DS_:
+;	.line	43; "six_sided_dice.c"	if (numLeds > 1){
 	MOVLW	0x02
-;	.line	40; "six_sided_dice.c"	GP1 = 0x01;
+;	.line	44; "six_sided_dice.c"	temp |= (0b00010);
 	BANKSEL	r0x1007
 	SUBWF	r0x1007,W
-;	.line	42; "six_sided_dice.c"	if (numLeds > 3){
-	BTFSS	STATUS,0
-	GOTO	_00002_DS_
-	BANKSEL	_GPIObits
-	BSF	_GPIObits,1
-_00002_DS_:
+;	.line	46; "six_sided_dice.c"	if (numLeds > 3){
+	BTFSC	STATUS,0
+	BSF	r0x1008,1
 	MOVLW	0x04
-;	.line	43; "six_sided_dice.c"	GP4 = 0x01;
-	BANKSEL	r0x1007
+;	.line	47; "six_sided_dice.c"	temp |= (0b10000);
 	SUBWF	r0x1007,W
-;	.line	46; "six_sided_dice.c"	delay(TIME);
-	BTFSS	STATUS,0
-	GOTO	_00003_DS_
-	BANKSEL	_GPIObits
-	BSF	_GPIObits,4
-_00003_DS_:
+;	.line	49; "six_sided_dice.c"	if (numLeds == 6){
+	BTFSC	STATUS,0
+	BSF	r0x1008,4
+	MOVF	r0x1007,W
+	XORLW	0x06
+	BTFSS	STATUS,2
+	GOTO	_00153_DS_
+;	.line	50; "six_sided_dice.c"	temp |= (0b00101);
+	MOVLW	0x05
+	IORWF	r0x1008,F
+_00153_DS_:
+;	.line	53; "six_sided_dice.c"	GPIO = temp;
+	BANKSEL	r0x1008
+	MOVF	r0x1008,W
+	BANKSEL	_GPIO
+	MOVWF	_GPIO
+;	.line	55; "six_sided_dice.c"	delay(TIME);
 	MOVLW	0x64
 	MOVWF	STK00
 	MOVLW	0x00
@@ -205,20 +217,14 @@ _00003_DS_:
 	CALL	_delay
 	PAGESEL	$
 _00154_DS_:
-;	.line	48; "six_sided_dice.c"	while (GP5);
+;	.line	57; "six_sided_dice.c"	while (GP5);
 	BANKSEL	_GPIObits
 	BTFSC	_GPIObits,5
 	GOTO	_00154_DS_
-;	.line	51; "six_sided_dice.c"	GP0 = 0x00;
-	BCF	_GPIObits,0
-;	.line	52; "six_sided_dice.c"	GP1 = 0x00;
-	BCF	_GPIObits,1
-;	.line	53; "six_sided_dice.c"	GP2 = 0x00;
-	BCF	_GPIObits,2
-;	.line	54; "six_sided_dice.c"	GP3 = 0x00;
-	BCF	_GPIObits,3
+;	.line	60; "six_sided_dice.c"	GPIO = 0x00;
+	CLRF	_GPIO
 	GOTO	_00160_DS_
-;	.line	57; "six_sided_dice.c"	}
+;	.line	63; "six_sided_dice.c"	}
 	RETURN	
 ; exit point of _main
 
@@ -235,7 +241,7 @@ _00154_DS_:
 S_six_sided_dice__lfsrGenerate	code
 _lfsrGenerate:
 ; 2 exit points
-;	.line	14; "six_sided_dice.c"	if (lfsr & 0x01) {
+;	.line	17; "six_sided_dice.c"	if (lfsr & 0x01) {
 	BANKSEL	_lfsr
 	MOVF	_lfsr,W
 	BANKSEL	r0x1001
@@ -243,7 +249,7 @@ _lfsrGenerate:
 	BTFSS	r0x1001,0
 	GOTO	_00140_DS_
 ;;shiftRight_Left2ResultLit:5474: shCount=1, size=1, sign=0, same=0, offr=0
-;	.line	15; "six_sided_dice.c"	lfsr = (lfsr >> 1) ^ 0x91;  // XOR feedback polynomial
+;	.line	18; "six_sided_dice.c"	lfsr = (lfsr >> 1) ^ LFSR_XOR;  // XOR feedback polynomial
 	BCF	STATUS,0
 	BANKSEL	_lfsr
 	RRF	_lfsr,W
@@ -251,7 +257,7 @@ _lfsrGenerate:
 	MOVWF	r0x1001
 	MOVWF	r0x1002
 ;;1	CLRF	r0x1003
-	MOVLW	0x91
+	MOVLW	0xb8
 	XORWF	r0x1002,W
 	BANKSEL	_lfsr
 	MOVWF	_lfsr
@@ -263,15 +269,15 @@ _lfsrGenerate:
 	GOTO	_00141_DS_
 ;;shiftRight_Left2ResultLit:5474: shCount=1, size=1, sign=0, same=1, offr=0
 _00140_DS_:
-;	.line	17; "six_sided_dice.c"	lfsr >>= 1;
+;	.line	20; "six_sided_dice.c"	lfsr >>= 1;
 	BCF	STATUS,0
 	BANKSEL	_lfsr
 	RRF	_lfsr,F
 _00141_DS_:
-;	.line	19; "six_sided_dice.c"	return lfsr;
+;	.line	22; "six_sided_dice.c"	return lfsr;
 	BANKSEL	_lfsr
 	MOVF	_lfsr,W
-;	.line	20; "six_sided_dice.c"	}
+;	.line	23; "six_sided_dice.c"	}
 	RETURN	
 ; exit point of _lfsrGenerate
 
@@ -291,12 +297,12 @@ _00141_DS_:
 S_six_sided_dice__delay	code
 _delay:
 ; 2 exit points
-;	.line	8; "six_sided_dice.c"	void delay (unsigned int time){
+;	.line	11; "six_sided_dice.c"	void delay (unsigned int time){
 	BANKSEL	r0x1001
 	MOVWF	r0x1001
 	MOVF	STK00,W
 	MOVWF	r0x1002
-;	.line	9; "six_sided_dice.c"	for(unsigned int i= 0; i < time; i++)
+;	.line	12; "six_sided_dice.c"	for(unsigned int i= 0; i < time; i++)
 	CLRF	r0x1003
 	CLRF	r0x1004
 _00111_DS_:
@@ -310,8 +316,8 @@ _00111_DS_:
 _00133_DS_:
 	BTFSC	STATUS,0
 	GOTO	_00113_DS_
-;;genSkipc:3307: created from rifx:0x7ffe4131fba0
-;	.line	10; "six_sided_dice.c"	for(unsigned int j= 0; j < 1000; j++);
+;;genSkipc:3307: created from rifx:0x7fff495c46b0
+;	.line	13; "six_sided_dice.c"	for(unsigned int j= 0; j < 1000; j++);
 	BANKSEL	r0x1005
 	CLRF	r0x1005
 	CLRF	r0x1006
@@ -327,26 +333,26 @@ _00108_DS_:
 _00134_DS_:
 	BTFSC	STATUS,0
 	GOTO	_00112_DS_
-;;genSkipc:3307: created from rifx:0x7ffe4131fba0
+;;genSkipc:3307: created from rifx:0x7fff495c46b0
 	BANKSEL	r0x1005
 	INCF	r0x1005,F
 	BTFSC	STATUS,2
 	INCF	r0x1006,F
 	GOTO	_00108_DS_
 _00112_DS_:
-;	.line	9; "six_sided_dice.c"	for(unsigned int i= 0; i < time; i++)
+;	.line	12; "six_sided_dice.c"	for(unsigned int i= 0; i < time; i++)
 	BANKSEL	r0x1003
 	INCF	r0x1003,F
 	BTFSC	STATUS,2
 	INCF	r0x1004,F
 	GOTO	_00111_DS_
 _00113_DS_:
-;	.line	11; "six_sided_dice.c"	}
+;	.line	14; "six_sided_dice.c"	}
 	RETURN	
 ; exit point of _delay
 
 
 ;	code size estimation:
-;	  104+   31 =   135 instructions (  332 byte)
+;	  104+   29 =   133 instructions (  324 byte)
 
 	end
