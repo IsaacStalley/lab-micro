@@ -1,0 +1,369 @@
+gplink-1.4.0 #1107 (Jan  1 2021)
+Copyright (c) 1998-2014 gputils project
+Listing File Generated: 8-30-2023  17:59:30
+ 
+ 
+Address  Value    Disassembly              Source
+-------  -----    -----------              ------
+                                           ;--------------------------------------------------------
+                                           ; File Created by SDCC : free open source ANSI-C Compiler
+                                           ; Version 4.0.0 #11528 (Linux)
+                                           ;--------------------------------------------------------
+                                           ; PIC port for the 14-bit core
+                                           ;--------------------------------------------------------
+                                           ;	.file	"six_sided_dice.c"
+                                           	list	p=12f683
+                                           	radix dec
+                                           	include "p12f683.inc"
+                                                   LIST
+                                           
+                                           ;==========================================================================
+                                           ; Build date : Aug 07 2014
+                                           ;  MPASM PIC12F683 processor include
+                                           ; 
+                                           ;  (c) Copyright 1999-2014 Microchip Technology, All rights reserved
+                                           ;==========================================================================
+                                           
+                                                   NOLIST
+                                           ;--------------------------------------------------------
+                                           ; external declarations
+                                           ;--------------------------------------------------------
+                                           	extern	__modsint
+                                           	extern	_TRISIO
+                                           	extern	_GPIObits
+                                           	extern	__sdcc_gsinit_startup
+                                           ;--------------------------------------------------------
+                                           ; global declarations
+                                           ;--------------------------------------------------------
+                                           	global	_main
+                                           	global	_lfsrGenerate
+                                           	global	_delay
+                                           	global	_lfsr
+                                           
+                                           	global PSAVE
+                                           	global SSAVE
+                                           	global WSAVE
+                                           	global STK12
+                                           	global STK11
+                                           	global STK10
+                                           	global STK09
+                                           	global STK08
+                                           	global STK07
+                                           	global STK06
+                                           	global STK05
+                                           	global STK04
+                                           	global STK03
+                                           	global STK02
+                                           	global STK01
+                                           	global STK00
+                                           
+                                           sharebank udata_ovr 0x0070
+                                           PSAVE	res 1
+                                           SSAVE	res 1
+                                           WSAVE	res 1
+                                           STK12	res 1
+                                           STK11	res 1
+                                           STK10	res 1
+                                           STK09	res 1
+                                           STK08	res 1
+                                           STK07	res 1
+                                           STK06	res 1
+                                           STK05	res 1
+                                           STK04	res 1
+                                           STK03	res 1
+                                           STK02	res 1
+                                           STK01	res 1
+                                           STK00	res 1
+                                           
+                                           ;--------------------------------------------------------
+                                           ; global definitions
+                                           ;--------------------------------------------------------
+                                           ;--------------------------------------------------------
+                                           ; absolute symbol definitions
+                                           ;--------------------------------------------------------
+                                           ;--------------------------------------------------------
+                                           ; compiler-defined variables
+                                           ;--------------------------------------------------------
+                                           UDL_six_sided_dice_0	udata
+                                           r0x1002	res	1
+                                           r0x1001	res	1
+                                           r0x1003	res	1
+                                           r0x1004	res	1
+                                           r0x1005	res	1
+                                           r0x1006	res	1
+                                           r0x1007	res	1
+                                           r0x1008	res	1
+                                           r0x1009	res	1
+                                           ;--------------------------------------------------------
+                                           ; initialized data
+                                           ;--------------------------------------------------------
+                                           
+                                           IDD_six_sided_dice_0	idata
+                                           _lfsr
+                                           	db	0x55	; 85	'U'
+                                           
+                                           ;--------------------------------------------------------
+                                           ; initialized absolute data
+                                           ;--------------------------------------------------------
+                                           ;--------------------------------------------------------
+                                           ; overlayable items in internal ram 
+                                           ;--------------------------------------------------------
+                                           ;	udata_ovr
+                                           ;--------------------------------------------------------
+                                           ; reset vector 
+                                           ;--------------------------------------------------------
+                                           STARTUP	code 0x0000
+000000   0000     nop                      	nop
+                                           	pagesel __sdcc_gsinit_startup
+000001   2802     goto    0x0002           	goto	__sdcc_gsinit_startup
+                                           ;--------------------------------------------------------
+                                           ; code
+                                           ;--------------------------------------------------------
+                                           code_six_sided_dice	code
+                                           ;***
+                                           ;  pBlock Stats: dbName = M
+                                           ;***
+                                           ;has an exit
+                                           ;functions called:
+                                           ;   _lfsrGenerate
+                                           ;   __modsint
+                                           ;   _delay
+                                           ;   _lfsrGenerate
+                                           ;   __modsint
+                                           ;   _delay
+                                           ;6 compiler assigned registers:
+                                           ;   r0x1007
+                                           ;   r0x1008
+                                           ;   r0x1009
+                                           ;   STK02
+                                           ;   STK01
+                                           ;   STK00
+                                           ;; Starting pCode block
+                                           S_six_sided_dice__main	code
+                                           _main:
+                                           ; 2 exit points
+                                           ;	.line	24; "six_sided_dice.c"	TRISIO = 0b00100000;  // Set GP5 as input
+00014c   3020     movlw   0x20             	MOVLW	0x20
+00014d   1683     bsf     0x03, 0x5        	BANKSEL	_TRISIO
+00014e   0085     movwf   0x05             	MOVWF	_TRISIO
+                                           _00160_DS_:
+                                           ;	.line	29; "six_sided_dice.c"	if (GP5) {
+00014f   1283     bcf     0x03, 0x5        	BANKSEL	_GPIObits
+000150   1e85     btfss   0x05, 0x5        	BTFSS	_GPIObits,5
+000151   294f     goto    0x014f           	GOTO	_00160_DS_
+                                           ;	.line	31; "six_sided_dice.c"	unsigned char numLeds = (lfsrGenerate() % 6) + 1;
+                                           	PAGESEL	_lfsrGenerate
+000152   21e7     call    0x01e7           	CALL	_lfsrGenerate
+                                           	PAGESEL	$
+000153   1683     bsf     0x03, 0x5        	BANKSEL	r0x1007
+000154   00b2     movwf   0x32             	MOVWF	r0x1007
+000155   00b3     movwf   0x33             	MOVWF	r0x1008
+000156   01b4     clrf    0x34             	CLRF	r0x1009
+000157   3006     movlw   0x06             	MOVLW	0x06
+000158   00fd     movwf   0x7d             	MOVWF	STK02
+000159   3000     movlw   0x00             	MOVLW	0x00
+00015a   00fe     movwf   0x7e             	MOVWF	STK01
+00015b   0833     movf    0x33, 0x0        	MOVF	r0x1008,W
+00015c   00ff     movwf   0x7f             	MOVWF	STK00
+00015d   3000     movlw   0x00             	MOVLW	0x00
+                                           	PAGESEL	__modsint
+00015e   209e     call    0x009e           	CALL	__modsint
+                                           	PAGESEL	$
+00015f   1683     bsf     0x03, 0x5        	BANKSEL	r0x1008
+000160   00b3     movwf   0x33             	MOVWF	r0x1008
+000161   087f     movf    0x7f, 0x0        	MOVF	STK00,W
+000162   00b2     movwf   0x32             	MOVWF	r0x1007
+000163   00b4     movwf   0x34             	MOVWF	r0x1009
+000164   0a34     incf    0x34, 0x0        	INCF	r0x1009,W
+                                           ;	.line	33; "six_sided_dice.c"	if (numLeds % 2 != 0){
+000165   00b2     movwf   0x32             	MOVWF	r0x1007
+000166   00b3     movwf   0x33             	MOVWF	r0x1008
+000167   01b4     clrf    0x34             	CLRF	r0x1009
+000168   1c33     btfss   0x33, 0x0        	BTFSS	r0x1008,0
+000169   2972     goto    0x0172           	GOTO	_00149_DS_
+                                           ;	.line	34; "six_sided_dice.c"	if (numLeds == 6){
+00016a   0832     movf    0x32, 0x0        	MOVF	r0x1007,W
+                                           ;	.line	35; "six_sided_dice.c"	GP2 = 0x01;
+00016b   3a06     xorlw   0x06             	XORLW	0x06
+                                           ;	.line	37; "six_sided_dice.c"	GP0 = 0x01;
+00016c   1d03     btfss   0x03, 0x2        	BTFSS	STATUS,2
+00016d   2970     goto    0x0170           	GOTO	_00001_DS_
+00016e   1283     bcf     0x03, 0x5        	BANKSEL	_GPIObits
+00016f   1505     bsf     0x05, 0x2        	BSF	_GPIObits,2
+                                           _00001_DS_:
+000170   1283     bcf     0x03, 0x5        	BANKSEL	_GPIObits
+000171   1405     bsf     0x05, 0x0        	BSF	_GPIObits,0
+                                           _00149_DS_:
+                                           ;	.line	39; "six_sided_dice.c"	if (numLeds > 1){
+000172   3002     movlw   0x02             	MOVLW	0x02
+                                           ;	.line	40; "six_sided_dice.c"	GP1 = 0x01;
+000173   1683     bsf     0x03, 0x5        	BANKSEL	r0x1007
+000174   0232     subwf   0x32, 0x0        	SUBWF	r0x1007,W
+                                           ;	.line	42; "six_sided_dice.c"	if (numLeds > 3){
+000175   1c03     btfss   0x03, 0x0        	BTFSS	STATUS,0
+000176   2979     goto    0x0179           	GOTO	_00002_DS_
+000177   1283     bcf     0x03, 0x5        	BANKSEL	_GPIObits
+000178   1485     bsf     0x05, 0x1        	BSF	_GPIObits,1
+                                           _00002_DS_:
+000179   3004     movlw   0x04             	MOVLW	0x04
+                                           ;	.line	43; "six_sided_dice.c"	GP4 = 0x01;
+00017a   1683     bsf     0x03, 0x5        	BANKSEL	r0x1007
+00017b   0232     subwf   0x32, 0x0        	SUBWF	r0x1007,W
+                                           ;	.line	46; "six_sided_dice.c"	delay(TIME);
+00017c   1c03     btfss   0x03, 0x0        	BTFSS	STATUS,0
+00017d   2980     goto    0x0180           	GOTO	_00003_DS_
+00017e   1283     bcf     0x03, 0x5        	BANKSEL	_GPIObits
+00017f   1605     bsf     0x05, 0x4        	BSF	_GPIObits,4
+                                           _00003_DS_:
+000180   3064     movlw   0x64             	MOVLW	0x64
+000181   00ff     movwf   0x7f             	MOVWF	STK00
+000182   3000     movlw   0x00             	MOVLW	0x00
+                                           	PAGESEL	_delay
+000183   21c1     call    0x01c1           	CALL	_delay
+                                           	PAGESEL	$
+                                           _00154_DS_:
+                                           ;	.line	48; "six_sided_dice.c"	while (GP5);
+000184   1283     bcf     0x03, 0x5        	BANKSEL	_GPIObits
+000185   1a85     btfsc   0x05, 0x5        	BTFSC	_GPIObits,5
+000186   2984     goto    0x0184           	GOTO	_00154_DS_
+                                           ;	.line	51; "six_sided_dice.c"	GP0 = 0x00;
+000187   1005     bcf     0x05, 0x0        	BCF	_GPIObits,0
+                                           ;	.line	52; "six_sided_dice.c"	GP1 = 0x00;
+000188   1085     bcf     0x05, 0x1        	BCF	_GPIObits,1
+                                           ;	.line	53; "six_sided_dice.c"	GP2 = 0x00;
+000189   1105     bcf     0x05, 0x2        	BCF	_GPIObits,2
+                                           ;	.line	54; "six_sided_dice.c"	GP3 = 0x00;
+00018a   1185     bcf     0x05, 0x3        	BCF	_GPIObits,3
+00018b   294f     goto    0x014f           	GOTO	_00160_DS_
+                                           ;	.line	57; "six_sided_dice.c"	}
+00018c   0008     return                   	RETURN	
+                                           ; exit point of _main
+                                           
+                                           ;***
+                                           ;  pBlock Stats: dbName = C
+                                           ;***
+                                           ;has an exit
+                                           ;4 compiler assigned registers:
+                                           ;   r0x1001
+                                           ;   r0x1002
+                                           ;   r0x1003
+                                           ;   r0x1004
+                                           ;; Starting pCode block
+                                           S_six_sided_dice__lfsrGenerate	code
+                                           _lfsrGenerate:
+                                           ; 2 exit points
+                                           ;	.line	14; "six_sided_dice.c"	if (lfsr & 0x01) {
+0001e7   1683     bsf     0x03, 0x5        	BANKSEL	_lfsr
+0001e8   083c     movf    0x3c, 0x0        	MOVF	_lfsr,W
+0001e9   1683     bsf     0x03, 0x5        	BANKSEL	r0x1001
+0001ea   00ad     movwf   0x2d             	MOVWF	r0x1001
+0001eb   1c2d     btfss   0x2d, 0x0        	BTFSS	r0x1001,0
+0001ec   29fb     goto    0x01fb           	GOTO	_00140_DS_
+                                           ;;shiftRight_Left2ResultLit:5474: shCount=1, size=1, sign=0, same=0, offr=0
+                                           ;	.line	15; "six_sided_dice.c"	lfsr = (lfsr >> 1) ^ 0x91;  // XOR feedback polynomial
+0001ed   1003     bcf     0x03, 0x0        	BCF	STATUS,0
+0001ee   1683     bsf     0x03, 0x5        	BANKSEL	_lfsr
+0001ef   0c3c     rrf     0x3c, 0x0        	RRF	_lfsr,W
+0001f0   1683     bsf     0x03, 0x5        	BANKSEL	r0x1001
+0001f1   00ad     movwf   0x2d             	MOVWF	r0x1001
+0001f2   00ac     movwf   0x2c             	MOVWF	r0x1002
+                                           ;;1	CLRF	r0x1003
+0001f3   3091     movlw   0x91             	MOVLW	0x91
+0001f4   062c     xorwf   0x2c, 0x0        	XORWF	r0x1002,W
+0001f5   1683     bsf     0x03, 0x5        	BANKSEL	_lfsr
+0001f6   00bc     movwf   0x3c             	MOVWF	_lfsr
+0001f7   1683     bsf     0x03, 0x5        	BANKSEL	r0x1001
+0001f8   00ad     movwf   0x2d             	MOVWF	r0x1001
+0001f9   3000     movlw   0x00             	MOVLW	0x00
+                                           ;;1	MOVWF	r0x1004
+                                           ;;99	MOVF	r0x1001,W
+0001fa   29fe     goto    0x01fe           	GOTO	_00141_DS_
+                                           ;;shiftRight_Left2ResultLit:5474: shCount=1, size=1, sign=0, same=1, offr=0
+                                           _00140_DS_:
+                                           ;	.line	17; "six_sided_dice.c"	lfsr >>= 1;
+0001fb   1003     bcf     0x03, 0x0        	BCF	STATUS,0
+0001fc   1683     bsf     0x03, 0x5        	BANKSEL	_lfsr
+0001fd   0cbc     rrf     0x3c, 0x1        	RRF	_lfsr,F
+                                           _00141_DS_:
+                                           ;	.line	19; "six_sided_dice.c"	return lfsr;
+0001fe   1683     bsf     0x03, 0x5        	BANKSEL	_lfsr
+0001ff   083c     movf    0x3c, 0x0        	MOVF	_lfsr,W
+                                           ;	.line	20; "six_sided_dice.c"	}
+000200   0008     return                   	RETURN	
+                                           ; exit point of _lfsrGenerate
+                                           
+                                           ;***
+                                           ;  pBlock Stats: dbName = C
+                                           ;***
+                                           ;has an exit
+                                           ;7 compiler assigned registers:
+                                           ;   r0x1001
+                                           ;   STK00
+                                           ;   r0x1002
+                                           ;   r0x1003
+                                           ;   r0x1004
+                                           ;   r0x1005
+                                           ;   r0x1006
+                                           ;; Starting pCode block
+                                           S_six_sided_dice__delay	code
+                                           _delay:
+                                           ; 2 exit points
+                                           ;	.line	8; "six_sided_dice.c"	void delay (unsigned int time){
+0001c1   1683     bsf     0x03, 0x5        	BANKSEL	r0x1001
+0001c2   00ad     movwf   0x2d             	MOVWF	r0x1001
+0001c3   087f     movf    0x7f, 0x0        	MOVF	STK00,W
+0001c4   00ac     movwf   0x2c             	MOVWF	r0x1002
+                                           ;	.line	9; "six_sided_dice.c"	for(unsigned int i= 0; i < time; i++)
+0001c5   01ae     clrf    0x2e             	CLRF	r0x1003
+0001c6   01af     clrf    0x2f             	CLRF	r0x1004
+                                           _00111_DS_:
+0001c7   1683     bsf     0x03, 0x5        	BANKSEL	r0x1001
+0001c8   082d     movf    0x2d, 0x0        	MOVF	r0x1001,W
+0001c9   022f     subwf   0x2f, 0x0        	SUBWF	r0x1004,W
+0001ca   1d03     btfss   0x03, 0x2        	BTFSS	STATUS,2
+0001cb   29ce     goto    0x01ce           	GOTO	_00133_DS_
+0001cc   082c     movf    0x2c, 0x0        	MOVF	r0x1002,W
+0001cd   022e     subwf   0x2e, 0x0        	SUBWF	r0x1003,W
+                                           _00133_DS_:
+0001ce   1803     btfsc   0x03, 0x0        	BTFSC	STATUS,0
+0001cf   29e6     goto    0x01e6           	GOTO	_00113_DS_
+                                           ;;genSkipc:3307: created from rifx:0x7ffe4131fba0
+                                           ;	.line	10; "six_sided_dice.c"	for(unsigned int j= 0; j < 1000; j++);
+0001d0   1683     bsf     0x03, 0x5        	BANKSEL	r0x1005
+0001d1   01b0     clrf    0x30             	CLRF	r0x1005
+0001d2   01b1     clrf    0x31             	CLRF	r0x1006
+                                           ;;unsigned compare: left < lit(0x3E8=1000), size=2
+                                           _00108_DS_:
+0001d3   3003     movlw   0x03             	MOVLW	0x03
+0001d4   1683     bsf     0x03, 0x5        	BANKSEL	r0x1006
+0001d5   0231     subwf   0x31, 0x0        	SUBWF	r0x1006,W
+0001d6   1d03     btfss   0x03, 0x2        	BTFSS	STATUS,2
+0001d7   29da     goto    0x01da           	GOTO	_00134_DS_
+0001d8   30e8     movlw   0xe8             	MOVLW	0xe8
+0001d9   0230     subwf   0x30, 0x0        	SUBWF	r0x1005,W
+                                           _00134_DS_:
+0001da   1803     btfsc   0x03, 0x0        	BTFSC	STATUS,0
+0001db   29e1     goto    0x01e1           	GOTO	_00112_DS_
+                                           ;;genSkipc:3307: created from rifx:0x7ffe4131fba0
+0001dc   1683     bsf     0x03, 0x5        	BANKSEL	r0x1005
+0001dd   0ab0     incf    0x30, 0x1        	INCF	r0x1005,F
+0001de   1903     btfsc   0x03, 0x2        	BTFSC	STATUS,2
+0001df   0ab1     incf    0x31, 0x1        	INCF	r0x1006,F
+0001e0   29d3     goto    0x01d3           	GOTO	_00108_DS_
+                                           _00112_DS_:
+                                           ;	.line	9; "six_sided_dice.c"	for(unsigned int i= 0; i < time; i++)
+0001e1   1683     bsf     0x03, 0x5        	BANKSEL	r0x1003
+0001e2   0aae     incf    0x2e, 0x1        	INCF	r0x1003,F
+0001e3   1903     btfsc   0x03, 0x2        	BTFSC	STATUS,2
+0001e4   0aaf     incf    0x2f, 0x1        	INCF	r0x1004,F
+0001e5   29c7     goto    0x01c7           	GOTO	_00111_DS_
+                                           _00113_DS_:
+                                           ;	.line	11; "six_sided_dice.c"	}
+0001e6   0008     return                   	RETURN	
+                                           ; exit point of _delay
+                                           
+                                           
+                                           ;	code size estimation:
+                                           ;	  104+   31 =   135 instructions (  332 byte)
+                                           
+                                           	end
