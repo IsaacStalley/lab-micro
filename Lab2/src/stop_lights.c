@@ -9,19 +9,19 @@ struct stateMachine {
     // We can add more variables needed here.
 };
 
-void transitionToGreen(struct StateMachine sM) {
+void transitionToGreen(struct stateMachine sM) {
     sM.current_state = GREEN_STATE;
 }
 
-void transitionToYellow(struct StateMachine sM) {
+void transitionToYellow(struct stateMachine sM) {
     sM.current_state = YELLOW_STATE;
 }
 
-void transitionToRed(struct StateMachine sM) {
+void transitionToRed(struct stateMachine sM) {
     sM.current_state = RED_STATE;
 }
 
-void updateStateMachine(struct StateMachine sM) {
+void updateStateMachine(struct stateMachine sM) {
     switch (sM.current_state) {
         case RED_STATE:
             transitionToGreen(sM);
