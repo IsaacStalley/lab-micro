@@ -21,6 +21,7 @@ void transitionToRed(struct stateMachine sM) {
     sM.current_state = RED_STATE;
 }
 
+// Automatically transitions the state machine to the next state
 void updateStateMachine(struct stateMachine sM) {
     switch (sM.current_state) {
         case RED_STATE:
@@ -42,7 +43,10 @@ int main() {
     transitionToRed(sM);
 
     while (1) {
-        updateStateMachine(sM);
+        // logic here, for example:
+        // if (sM.current_state == yellow)
+        // delay(time)
+        // updateStateMachine(sM)
         
     }
 }
